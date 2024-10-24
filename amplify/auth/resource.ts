@@ -1,5 +1,6 @@
 import { defineAuth } from '@aws-amplify/backend';
 import { customMessage } from './custom-message/resource';
+import { postConfirmation } from './post-confirmation/resource';
 import { preSignUp } from './pre-sign-up/resource';
 
 /**
@@ -20,7 +21,6 @@ export const auth = defineAuth({
       mutable: true,
       required: false,
     },
-        
     "custom:display_name": {
       dataType: "String",
       mutable: true,
@@ -41,12 +41,15 @@ export const auth = defineAuth({
       dataType: "DateTime",
       mutable: true,
     },
-   
   },
   triggers: {
     preSignUp,
     customMessage,
-
+    postConfirmation,
   },
-  groups: ["ADMIN", "EDITORS"],
+  groups: ["EVERYONE"],
+
+  access: (allow) => [
+    allow.resource(postConfirmation).to(["addUserToGroup"]),
+  ],
 });
